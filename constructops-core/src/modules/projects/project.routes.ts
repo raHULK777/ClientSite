@@ -431,5 +431,23 @@ export function projectRouter(db: Database): Router {
     }),
   );
 
+  router.get(
+    "/clients",
+    authenticate(db),
+    requireRole("admin", "field_staff"),
+    asyncHandler(async (req, res) => {
+      const tenantId = req.tenant!.id;
+      const rows = await users.listClients(tenantId);
+      ok(res, {
+        clients: rows.map((row) => ({
+          id: row.id,
+          name: [row.first_name, row.last_name].filter(Boolean).join(" ").trim() || row.email,
+          email: row.email,
+          projects: [],
+        })),
+      });
+    }),
+  );
+
   return router;
 }

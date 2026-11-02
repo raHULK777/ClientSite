@@ -25,6 +25,7 @@ const NAV: NavItem[] = [
   { href: "/app/field", label: "Field", roles: ["admin", "field_staff"] },
   { href: "/app/change-orders", label: "Change orders", roles: ["admin", "field_staff"] },
   { href: "/app/clients", label: "Clients", roles: ["admin", "field_staff"] },
+  { href: "/app/users", label: "Users", roles: ["admin"] },
   { href: "/app/settings", label: "Settings", roles: ["admin"] },
 ];
 
@@ -69,8 +70,11 @@ function resolveSheet(pathname: string, projects: Project[]) {
   if (pathname.startsWith("/app/clients")) {
     return { label: "Clients", detail: "Workspace directory" };
   }
-  if (pathname.startsWith("/app/settings")) {
+if (pathname.startsWith("/app/settings")) {
     return { label: "Settings", detail: "Workspace record" };
+  }
+  if (pathname.startsWith("/app/users")) {
+    return { label: "Users", detail: "Workspace accounts" };
   }
   return { label: "Workspace", detail: "Project office" };
 }

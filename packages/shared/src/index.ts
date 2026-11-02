@@ -23,6 +23,7 @@ export {
   stageStatusUpdateSchema,
   tenantBrandingUpdateSchema,
   tenantFeaturesUpdateSchema,
+  userCreateSchema,
   uuidSchema,
   type AuditQueryInput,
   type ChangeOrderCreateInput,
@@ -38,6 +39,7 @@ export {
   type StageStatusUpdateInput,
   type TenantBrandingUpdateInput,
   type TenantFeaturesUpdateInput,
+  type UserCreateInput,
 } from "./contracts";
 
 export { dailyLogCreateSchema, type DailyLogCreateInput } from "./daily-logs";

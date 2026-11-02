@@ -23,6 +23,16 @@ export const loginSchema = z.object({
   password: z.string().min(8).max(200),
 });
 
+export const userCreateSchema = z.object({
+  email: z.string().trim().email().max(255),
+  password: z.string().min(8).max(200),
+  role: z.enum(["field_staff", "client"]),
+  firstName: z.string().trim().min(1).max(100).optional(),
+  lastName: z.string().trim().min(1).max(100).optional(),
+});
+
+export type UserCreateInput = z.infer<typeof userCreateSchema>;
+
 export const stageStatusSchema = z.enum(["pending", "active", "completed"]);
 export type StageStatus = z.infer<typeof stageStatusSchema>;
 

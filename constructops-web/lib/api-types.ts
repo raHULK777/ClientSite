@@ -50,6 +50,7 @@ export type ProjectDetail = {
   changeOrders: ChangeOrder[];
   changeOrderSummary: ChangeOrderSummary;
   dailyLogs: DailyLog[];
+  clients: ClientAccount[];
 };
 
 export type AuditEvent = {

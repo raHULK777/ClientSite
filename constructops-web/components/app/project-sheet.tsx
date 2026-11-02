@@ -28,6 +28,7 @@ import {
 import { Sheet, TitleBlock } from "@/components/ui/sheet";
 import { Stamp } from "@/components/ui/stamp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DailyLogForm } from "@/components/app/daily-log-form";
 import { apiMutate, ClientApiError } from "@/lib/client-api";
 import { cn } from "@/lib/cn";
@@ -319,6 +320,25 @@ export function ProjectSheet({
   const { project, changeOrders, changeOrderSummary } = detail;
   const isAdmin = user.role === "admin";
   const canIssue = isAdmin && changeOrdersEnabled;
+  const [clientDialogOpen, setClientDialogOpen] = useState(false);
+  const [selectedClientId, setSelectedClientId] = useState(project.clientId ?? "");
+  const [clientError, setClientError] = useState<string | null>(null);
+  const [clientPending, setClientPending] = useState(false);
+
+  async function assignClient() {
+    setClientError(null);
+    setClientPending(true);
+    try {
+      await apiMutate(`/protected/projects/${project.id}`, "PATCH", {
+        clientId: selectedClientId || null,
+      });
+      router.refresh();
+    } catch (cause) {
+      setClientError(cause instanceof ClientApiError ? cause.message : "Could not assign client.");
+    } finally {
+      setClientPending(false);
+    }
+  }
   const approvedValue = changeOrders
     .filter((order) => order.status === "approved")
     .reduce((total, order) => total + order.costImpact, 0);
@@ -356,6 +376,82 @@ export function ProjectSheet({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {isAdmin && project.clientId ? (
+            <Dialog open={clientDialogOpen} onOpenChange={setClientDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="secondary" size="sm">Edit client</Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogTitle>Assign client</DialogTitle>
+                <div className="flex flex-col gap-4 mt-4">
+                  <p className="text-sm text-ink-soft">
+                    Choose an existing client or create a new one in the Users page.
+                  </p>
+                  <select
+                    value={selectedClientId}
+                    onChange={(e) => setSelectedClientId(e.target.value)}
+                    className="h-12 border border-ink bg-paper-raised px-3 text-sm"
+                  >
+                    <option value="">No client assigned</option>
+                    {detail.clients?.map((client) => (
+                      <option key={client.id} value={client.id}>
+                        {client.name} {client.email ? `· ${client.email}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                  {clientError && (
+                    <p className="text-sm text-revision">{clientError}</p>
+                  )}
+                  <div className="flex justify-end gap-2">
+                    <Button variant="secondary" onClick={() => setClientDialogOpen(false)} disabled={clientPending}>
+                      Cancel
+                    </Button>
+                    <Button onClick={assignClient} loading={clientPending} disabled={clientPending}>
+                      Assign
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          ) : null}
+          {isAdmin && !project.clientId ? (
+            <Dialog open={clientDialogOpen} onOpenChange={setClientDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm">Assign client</Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogTitle>Assign client</DialogTitle>
+                <div className="flex flex-col gap-4 mt-4">
+                  <p className="text-sm text-ink-soft">
+                    Choose an existing client or create a new one in the Users page.
+                  </p>
+                  <select
+                    value={selectedClientId}
+                    onChange={(e) => setSelectedClientId(e.target.value)}
+                    className="h-12 border border-ink bg-paper-raised px-3 text-sm"
+                  >
+                    <option value="">No client assigned</option>
+                    {detail.clients?.map((client) => (
+                      <option key={client.id} value={client.id}>
+                        {client.name} {client.email ? `· ${client.email}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                  {clientError && (
+                    <p className="text-sm text-revision">{clientError}</p>
+                  )}
+                  <div className="flex justify-end gap-2">
+                    <Button variant="secondary" onClick={() => setClientDialogOpen(false)} disabled={clientPending}>
+                      Cancel
+                    </Button>
+                    <Button onClick={assignClient} loading={clientPending} disabled={clientPending}>
+                      Assign
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          ) : null}
           {canIssue ? (
             <Button asChild>
               <Link href={`/app/projects/${project.id}/change-orders/new`}>

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Schedule, ScheduleBody, ScheduleCell, ScheduleRow } from "@/components/ui/schedule";
+import { ScheduleTable, ScheduleBody, ScheduleCell, ScheduleRow } from "@/components/ui/schedule";
 import { Sheet, TitleBlock } from "@/components/ui/sheet";
 import { Stamp } from "@/components/ui/stamp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -265,7 +265,7 @@ export function PortalProjectDetail({
             </div>
           </div>
 
-          <Schedule className="mt-3">
+          <ScheduleTable className="mt-3">
             <ScheduleBody>
               {changeOrders.length ? (
                 changeOrders.map((order) => (
@@ -307,7 +307,7 @@ export function PortalProjectDetail({
                 </ScheduleRow>
               )}
             </ScheduleBody>
-          </Schedule>
+          </ScheduleTable>
 
           {changeOrders.some((o) => o.status === "pending") && (
             <div className="mt-4 border border-revision bg-paper px-4 py-3 text-sm leading-relaxed text-revision">

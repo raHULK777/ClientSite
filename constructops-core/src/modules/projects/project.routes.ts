@@ -125,11 +125,12 @@ export function projectRouter(db: Database): Router {
         req.params.id!,
       );
       const rows = await orders.listByProject(req.tenant!.id, project.id);
-      const [stageRows, updateRows, logRows, clientRows] = await Promise.all([
+      const [stageRows, updateRows, logRows, clientRows, messageRows] = await Promise.all([
         stages.listByProject(req.tenant!.id, project.id),
         stages.listUpdates(req.tenant!.id, project.id),
         dailyLogs.listByProject(req.tenant!.id, project.id),
         users.listClients(req.tenant!.id),
+        messages.listByProject(req.tenant!.id, project.id),
       ]);
       const summary = rows.reduce(
         (acc, row) => {
@@ -153,6 +154,7 @@ export function projectRouter(db: Database): Router {
           email: row.email,
           projects: [],
         })),
+        messages: messageRows.map(mapMessage),
       });
     }),
   );

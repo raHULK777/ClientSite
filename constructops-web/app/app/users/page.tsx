@@ -15,7 +15,7 @@ export default async function UsersPageWrapper() {
   const user = await requireSession(["admin"]);
   const [_, usersData] = await Promise.all([
     getTenantPayload(),
-    coreFetch<{ users: SessionUser[] }>("/protected/auth/users"),
+    coreFetch<{ users: SessionUser[] }>("/auth/users"),
   ]);
 
   return (

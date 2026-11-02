@@ -595,7 +595,6 @@ export function ProjectSheet({
           <div className="mt-5">
             <DailyLogForm
               projectId={project.id}
-              submitting={false}
               onSubmit={async (values) => {
                 await apiMutate(`/protected/projects/${project.id}/daily-logs`, "POST", values);
                 router.refresh();

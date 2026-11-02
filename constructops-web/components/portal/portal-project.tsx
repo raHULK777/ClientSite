@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ChangeOrderCard } from "@/components/portal/change-order-card";
 import { DataCard } from "@/components/ui/data-card";
 import { Progress } from "@/components/ui/progress";
@@ -125,16 +126,24 @@ export function PortalProject({
               {project.projectName}
             </h2>
           </div>
-          <Stamp
-            className={cn(
-              "px-2.5 py-1 text-[9px]",
-              project.status === "planning"
-                ? "border-line-strong text-muted"
-                : "border-ink text-ink",
-            )}
-          >
-            {PROJECT_STATUS_LABEL[project.status]}
-          </Stamp>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/portal/projects/${project.id}`}
+              className="type-label border border-line-strong px-2 py-1 text-[9px] text-muted hover:text-ink hover:border-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised"
+            >
+              View details
+            </Link>
+            <Stamp
+              className={cn(
+                "px-2.5 py-1 text-[9px]",
+                project.status === "planning"
+                  ? "border-line-strong text-muted"
+                  : "border-ink text-ink",
+              )}
+            >
+              {PROJECT_STATUS_LABEL[project.status]}
+            </Stamp>
+          </div>
         </div>
 
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">

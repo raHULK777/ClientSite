@@ -51,6 +51,7 @@ export type ProjectDetail = {
   changeOrderSummary: ChangeOrderSummary;
   dailyLogs: DailyLog[];
   clients: ClientAccount[];
+  messages: Message[];
 };
 
 export type AuditEvent = {
@@ -97,5 +98,14 @@ export type DailyLog = {
   details: string | null;
   weather: string | null;
   crewSize: number | null;
+  createdAt: string;
+};
+
+export type Message = {
+  id: string;
+  projectId: string;
+  authorId: string;
+  authorName: string | null;
+  body: string;
   createdAt: string;
 };

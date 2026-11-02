@@ -155,6 +155,7 @@ export const tenantFeaturesUpdateSchema = z
     estimator: z.boolean().optional(),
     clientPortal: z.boolean().optional(),
     changeOrders: z.boolean().optional(),
+    projectChat: z.boolean().optional(),
   })
   .refine((value) => Object.keys(value).length > 0, {
     message: "Provide at least one feature to update.",

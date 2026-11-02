@@ -271,6 +271,12 @@ const FEATURE_COPY: {
     description: "Office can issue priced changes for signature.",
     offNote: "Blocks new change orders and client signatures.",
   },
+  {
+    key: "projectChat",
+    label: "Project chat",
+    description: "Real-time messaging between client, field, and office on active jobs.",
+    offNote: "Disables the chat panel on project pages.",
+  },
 ];
 
 function FeaturesForm({ tenant }: { tenant: AdminTenant }) {
@@ -279,6 +285,7 @@ function FeaturesForm({ tenant }: { tenant: AdminTenant }) {
     estimator: tenant.features.estimator,
     clientPortal: tenant.features.clientPortal,
     changeOrders: tenant.features.changeOrders,
+    projectChat: tenant.features.projectChat ?? false,
   });
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);

@@ -40,6 +40,16 @@ export {
   type TenantFeaturesUpdateInput,
 } from "./contracts";
 
+export { dailyLogCreateSchema, type DailyLogCreateInput } from "./daily-logs";
+
+export {
+  messageIdParamSchema,
+  messageSendSchema,
+  type MessageSendInput,
+  type MessageDto,
+  type MessageRow,
+} from "./messages";
+
 export { DEFAULT_STAGE_PLAN, deriveCurrentPhase, deriveStageProgress } from "./stages";
 
 export {

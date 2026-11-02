@@ -28,6 +28,7 @@ import {
 import { Sheet, TitleBlock } from "@/components/ui/sheet";
 import { Stamp } from "@/components/ui/stamp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DailyLogForm } from "@/components/app/daily-log-form";
 import { apiMutate, ClientApiError } from "@/lib/client-api";
 import { cn } from "@/lib/cn";
 import {
@@ -314,6 +315,7 @@ export function ProjectSheet({
   events: AuditEvent[];
   changeOrdersEnabled: boolean;
 }) {
+  const router = useRouter();
   const { project, changeOrders, changeOrderSummary } = detail;
   const isAdmin = user.role === "admin";
   const canIssue = isAdmin && changeOrdersEnabled;
@@ -462,6 +464,10 @@ export function ProjectSheet({
             Change orders
             <span className="ml-1.5 text-[10px] text-muted">({changeOrders.length})</span>
           </TabsTrigger>
+          <TabsTrigger value="daily-logs">
+            Site logs
+            <span className="ml-1.5 text-[10px] text-muted">({detail.dailyLogs.length})</span>
+          </TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
         </TabsList>
 
@@ -576,6 +582,62 @@ export function ProjectSheet({
               </ScheduleBody>
             </ScheduleTable>
           </Schedule>
+        </TabsContent>
+
+        <TabsContent value="daily-logs">
+          <div className="flex flex-wrap items-end justify-between gap-3 border-b-2 border-ink pb-2">
+            <div>
+              <p className="type-label text-muted">Site record</p>
+              <h2 className="type-heading mt-1 text-lg">Daily logs</h2>
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <DailyLogForm
+              projectId={project.id}
+              submitting={false}
+              onSubmit={async (values) => {
+                await apiMutate(`/protected/projects/${project.id}/daily-logs`, "POST", values);
+                router.refresh();
+              }}
+            />
+          </div>
+
+          <div className="mt-5">
+            {detail.dailyLogs.length ? (
+              <ol className="max-w-2xl">
+                {detail.dailyLogs.map((log) => (
+                  <li key={log.id} className="relative flex gap-4 border-b border-line py-4">
+                    <span className="relative flex w-4 shrink-0 justify-center">
+                      <span className="mt-1.5 h-2 w-2 border border-ink bg-brand-bg" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="type-label text-[9px] text-muted">{log.date}</span>
+                        {log.authorName ? (
+                          <span className="text-[11px] text-muted">by {log.authorName}</span>
+                        ) : null}
+                        {log.crewSize !== null ? (
+                          <span className="text-[11px] text-muted">crew {log.crewSize}</span>
+                        ) : null}
+                        {log.weather ? (
+                          <span className="text-[11px] text-muted">{log.weather}</span>
+                        ) : null}
+                      </div>
+                      <p className="mt-1 text-sm font-semibold text-ink">{log.summary}</p>
+                      {log.details ? (
+                        <p className="mt-1 text-sm leading-relaxed text-ink-soft">{log.details}</p>
+                      ) : null}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="max-w-xl text-sm leading-relaxed text-muted">
+                No site logs recorded yet. Field staff and the office can add dated entries here.
+              </p>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="activity">

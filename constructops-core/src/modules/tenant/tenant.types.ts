@@ -25,6 +25,7 @@ export type TenantContext = {
     estimator: boolean;
     clientPortal: boolean;
     changeOrders: boolean;
+    projectChat: boolean;
   };
   branding: TenantBranding;
   pricingMatrix: PricingMatrix | null;
@@ -41,6 +42,7 @@ export type TenantRow = {
   enable_estimator: boolean;
   enable_client_portal: boolean;
   enable_change_orders: boolean;
+  enable_project_chat: boolean;
   estimator_pricing_matrix: unknown;
   branding_config: unknown;
 };

@@ -17,6 +17,7 @@ export type PublicTenant = {
     estimator: boolean;
     clientPortal: boolean;
     changeOrders: boolean;
+    projectChat: boolean;
   };
   branding: {
     typography: { fontFamily: string; baseSize: string };
@@ -54,7 +55,7 @@ const FALLBACK_TENANT: PublicTenant = {
     background: "#F6F3ED",
     surface: "#FFFFFF",
   },
-  features: { estimator: true, clientPortal: true, changeOrders: true },
+  features: { estimator: true, clientPortal: true, changeOrders: true, projectChat: false },
   branding: {
     typography: { fontFamily: "Archivo", baseSize: "16px" },
     layout: { navbarStyle: "ruled", sidebarPosition: "left", borderRadius: "0" },

@@ -5,8 +5,8 @@ import { mapTenant } from "./tenant.mapper";
 import type { TenantBranding, TenantContext, TenantRow } from "./tenant.types";
 
 const COLUMNS = `id, company_name, subdomain, custom_domain, logo_url, primary_color, secondary_color,
-                 enable_estimator, enable_client_portal, enable_change_orders,
-                 estimator_pricing_matrix, branding_config`;
+                  enable_estimator, enable_client_portal, enable_change_orders, enable_project_chat,
+                  estimator_pricing_matrix, branding_config`;
 
 export type BrandingUpdate = {
   companyName?: string;
@@ -20,6 +20,7 @@ export type FeaturesUpdate = {
   estimator?: boolean;
   clientPortal?: boolean;
   changeOrders?: boolean;
+  projectChat?: boolean;
 };
 
 function serializeBranding(branding: TenantBranding): Record<string, unknown> {
@@ -99,6 +100,7 @@ export class TenantRepository {
     if (input.estimator !== undefined) set("enable_estimator", input.estimator);
     if (input.clientPortal !== undefined) set("enable_client_portal", input.clientPortal);
     if (input.changeOrders !== undefined) set("enable_change_orders", input.changeOrders);
+    if (input.projectChat !== undefined) set("enable_project_chat", input.projectChat);
 
     if (!fields.length) return this.findById(id);
 

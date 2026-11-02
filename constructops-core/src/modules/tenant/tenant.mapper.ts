@@ -85,6 +85,7 @@ export function mapTenant(row: TenantRow): TenantContext {
       estimator: row.enable_estimator,
       clientPortal: row.enable_client_portal,
       changeOrders: row.enable_change_orders,
+      projectChat: row.enable_project_chat,
     },
     branding,
     pricingMatrix: parseMatrix(row.estimator_pricing_matrix),

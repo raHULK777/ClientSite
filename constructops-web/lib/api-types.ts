@@ -49,6 +49,7 @@ export type ProjectDetail = {
   project: Project;
   changeOrders: ChangeOrder[];
   changeOrderSummary: ChangeOrderSummary;
+  dailyLogs: DailyLog[];
 };
 
 export type AuditEvent = {
@@ -84,3 +85,16 @@ export type ClientAccount = {
 };
 
 export type PaletteForm = TenantPalette;
+
+export type DailyLog = {
+  id: string;
+  projectId: string;
+  authorId: string;
+  authorName: string | null;
+  date: string;
+  summary: string;
+  details: string | null;
+  weather: string | null;
+  crewSize: number | null;
+  createdAt: string;
+};

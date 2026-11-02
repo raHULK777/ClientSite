@@ -69,9 +69,9 @@ export async function seed(): Promise<void> {
   await db.query(
     `INSERT INTO tenants (
       id, company_name, subdomain, custom_domain, logo_url, primary_color, secondary_color,
-      enable_estimator, enable_client_portal, enable_change_orders,
+      enable_estimator, enable_client_portal, enable_change_orders, enable_project_chat,
       estimator_pricing_matrix, branding_config
-    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
     ON CONFLICT (id) DO UPDATE SET
       company_name = EXCLUDED.company_name,
       subdomain = EXCLUDED.subdomain,
@@ -81,6 +81,7 @@ export async function seed(): Promise<void> {
       enable_estimator = EXCLUDED.enable_estimator,
       enable_client_portal = EXCLUDED.enable_client_portal,
       enable_change_orders = EXCLUDED.enable_change_orders,
+      enable_project_chat = EXCLUDED.enable_project_chat,
       estimator_pricing_matrix = EXCLUDED.estimator_pricing_matrix,
       branding_config = EXCLUDED.branding_config`,
     [
@@ -94,6 +95,7 @@ export async function seed(): Promise<void> {
       true,
       true,
       true,
+      false,
       JSON.stringify(santosPricingMatrix),
       JSON.stringify(brandingConfig),
     ],

@@ -2,13 +2,17 @@ import { Router } from "express";
 
 import {
   changeOrderCreateSchema,
+  dailyLogCreateSchema,
   fieldStaffProjectUpdateSchema,
   idParamSchema,
+  messageSendSchema,
   projectCreateSchema,
   projectUpdateSchema,
   stageIdParamSchema,
   stagePlanSchema,
   stageStatusUpdateSchema,
+  type DailyLogCreateInput,
+  type MessageSendInput,
   type ProjectCreateInput,
   type ProjectStatus,
   type StagePlanInput,
@@ -30,6 +34,10 @@ import { ProjectRepository } from "./project.repository";
 import { requireProject } from "./project.service";
 import { mapStage, mapStageUpdate } from "./stage.mapper";
 import { StageRepository } from "./stage.repository";
+import { DailyLogRepository } from "./daily-log.repository";
+import { mapDailyLog } from "./daily-log.mapper";
+import { MessageRepository } from "./message.repository";
+import { mapMessage } from "./message.mapper";
 
 function projectUpdate(req: { body: unknown; user?: { role: string } }) {
   const schema =
@@ -50,6 +58,8 @@ export function projectRouter(db: Database): Router {
   const orders = new ChangeOrderRepository(db);
   const users = new UserRepository(db);
   const stages = new StageRepository(db);
+  const dailyLogs = new DailyLogRepository(db);
+  const messages = new MessageRepository(db);
 
   router.use(authenticate(db));
 
@@ -115,9 +125,10 @@ export function projectRouter(db: Database): Router {
         req.params.id!,
       );
       const rows = await orders.listByProject(req.tenant!.id, project.id);
-      const [stageRows, updateRows] = await Promise.all([
+      const [stageRows, updateRows, logRows] = await Promise.all([
         stages.listByProject(req.tenant!.id, project.id),
         stages.listUpdates(req.tenant!.id, project.id),
+        dailyLogs.listByProject(req.tenant!.id, project.id),
       ]);
       const summary = rows.reduce(
         (acc, row) => {
@@ -134,6 +145,7 @@ export function projectRouter(db: Database): Router {
         changeOrderSummary: summary,
         stages: stageRows.map(mapStage),
         stageUpdates: updateRows.map(mapStageUpdate),
+        dailyLogs: logRows.map(mapDailyLog),
       });
     }),
   );
@@ -321,6 +333,101 @@ export function projectRouter(db: Database): Router {
         ip: req.ip ?? null,
       });
       ok(res, { changeOrder: mapChangeOrder(row) }, 201);
+    }),
+  );
+
+  router.get(
+    "/:id/daily-logs",
+    validateParams(idParamSchema),
+    asyncHandler(async (req, res) => {
+      const user = req.user!;
+      const project = await requireProject(
+        projects,
+        req.tenant!.id,
+        { id: user.id, role: user.role },
+        req.params.id!,
+      );
+      const rows = await dailyLogs.listByProject(req.tenant!.id, project.id);
+      ok(res, { dailyLogs: rows.map(mapDailyLog) });
+    }),
+  );
+
+  router.post(
+    "/:id/daily-logs",
+    requireRole("admin", "field_staff"),
+    validateParams(idParamSchema),
+    validateBody(dailyLogCreateSchema),
+    asyncHandler(async (req, res) => {
+      const tenantId = req.tenant!.id;
+      const user = req.user!;
+      const input = req.body as DailyLogCreateInput;
+      const project = await projects.findById(tenantId, req.params.id!);
+      if (!project) throw notFound("Project not found.");
+
+      const row = await dailyLogs.create(tenantId, { ...input, projectId: req.params.id! }, user.id);
+      if (!row) throw notFound("Project not found.");
+
+      await recordAudit(db, {
+        tenantId,
+        actorId: user.id,
+        action: "project.daily_log_created",
+        entityType: "project",
+        entityId: project.id,
+        metadata: { logId: row.id, logDate: input.logDate },
+        ip: req.ip ?? null,
+      });
+      ok(res, { dailyLog: mapDailyLog(row) }, 201);
+    }),
+  );
+
+  router.get(
+    "/:id/messages",
+    validateParams(idParamSchema),
+    asyncHandler(async (req, res) => {
+      const user = req.user!;
+      const project = await requireProject(
+        projects,
+        req.tenant!.id,
+        { id: user.id, role: user.role },
+        req.params.id!,
+      );
+      if (!req.tenant!.features.projectChat) {
+        throw forbidden("Project chat is not enabled for this workspace.");
+      }
+      const rows = await messages.listByProject(req.tenant!.id, project.id);
+      await messages.markRead(req.tenant!.id, project.id, user.id);
+      ok(res, { messages: rows.map(mapMessage) });
+    }),
+  );
+
+  router.post(
+    "/:id/messages",
+    requireRole("admin", "field_staff", "client"),
+    validateParams(idParamSchema),
+    validateBody(messageSendSchema),
+    asyncHandler(async (req, res) => {
+      const tenantId = req.tenant!.id;
+      const user = req.user!;
+      const input = req.body as MessageSendInput;
+      const project = await projects.findById(tenantId, req.params.id!);
+      if (!project) throw notFound("Project not found.");
+      if (!req.tenant!.features.projectChat) {
+        throw forbidden("Project chat is not enabled for this workspace.");
+      }
+
+      const row = await messages.create(tenantId, project.id, user.id, input.body);
+      if (!row) throw notFound("Project not found.");
+
+      await recordAudit(db, {
+        tenantId,
+        actorId: user.id,
+        action: "project.message_sent",
+        entityType: "project",
+        entityId: project.id,
+        metadata: { messageId: row.id },
+        ip: req.ip ?? null,
+      });
+      ok(res, { message: mapMessage(row) }, 201);
     }),
   );
 

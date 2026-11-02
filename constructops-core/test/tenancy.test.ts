@@ -114,6 +114,7 @@ describe("tenant resolution and isolation", () => {
       estimator: true,
       clientPortal: true,
       changeOrders: true,
+      projectChat: false,
     });
   });
 

@@ -1,0 +1,2 @@
+ALTER TABLE tenants
+ADD COLUMN IF NOT EXISTS enable_project_chat BOOLEAN DEFAULT FALSE;

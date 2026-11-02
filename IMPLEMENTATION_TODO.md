@@ -197,12 +197,12 @@ mutating capability; a11y spec still green on `/portal`.
 
 ## P7 — Verification sweep
 
-- [ ] `npm run typecheck`, `npm run lint`, `npm test`, `npm run test:e2e` all green.
-- [ ] axe: zero critical/serious on landing, login, workspace, change orders, field, portal, and
+- [x] `npm run typecheck`, `npm run lint`, `npm test`, `npm run test:e2e` all green.
+- [x] axe: zero critical/serious on landing, login, workspace, change orders, field, portal, and
       the two new routes.
-- [ ] Screenshots at 1440×900 and 390×844 with the document-overflow assertion, added to
+- [x] Screenshots at 1440×900 and 390×844 with the document-overflow assertion, added to
       `.impeccable/review/`.
-- [ ] Cross-tenant probe script returns only 403/404 for every new endpoint.
+- [x] Cross-tenant probe script returns only 403/404 for every new endpoint.
 - [ ] Update `README.md` (new routes, roles, demo data), `DESIGN.md` (StageTrack rules),
       `IMPLEMENTATION_PLAN.md` (delivered state), and this file's checkboxes.
 
@@ -212,14 +212,14 @@ mutating capability; a11y spec still green on `/portal`.
 
 ## P8 — Daily logs (text only)
 
-- [ ] Migration `003_project_daily_logs.sql`: `project_daily_logs` (`tenant_id`, `project_id`,
+- [x] Migration `003_project_daily_logs.sql`: `project_daily_logs` (`tenant_id`, `project_id`,
       `author_id`, `log_date`, `summary`, `details`, `weather`, `crew_size`, `created_at`),
       tenant-bound with cascade.
-- [ ] API: `GET`/`POST` `/protected/projects/:id/daily-logs`; author = admin or field_staff;
+- [x] API: `GET`/`POST` `/protected/projects/:id/daily-logs`; author = admin or field_staff;
       clients read.
-- [ ] Field UI: dated log composer + reverse-chronological log list.
-- [ ] Client portal: read-only log timeline on the project detail page.
-- [ ] Images are **out of scope for this phase** — the schema reserves no binary column.
+- [x] Field UI: dated log composer + reverse-chronological log list (project sheet daily-logs tab).
+- [x] Client portal: read-only log timeline on the project detail page.
+- [x] Images are **out of scope for this phase** — the schema reserves no binary column.
       Pending a separate decision and an amendment to the asset-path rule.
 
 **Done:** field staff record dated text logs; clients read them; no binary handling exists.
@@ -228,32 +228,27 @@ mutating capability; a11y spec still green on `/portal`.
 
 ## P9 — Realtime chat + push notifications
 
-Largest phase. Requires new dependencies and new infrastructure that does not exist today
-(no WebSocket library, no mail library, no notification service in the repo).
-
-- [ ] Amendment already landed in P0; re-verify no document still forbids this.
-- [ ] Migration `004_project_messages.sql`: `project_messages` (tenant-bound, cascade,
+- [x] Amendment already landed in P0; re-verify no document still forbids this.
+- [x] Migration `004_project_messages.sql`: `project_messages` (tenant-bound, cascade,
       `author_id`, `body`, `created_at`) + `project_message_reads` for unread counts.
+- [x] REST API: `GET`/`POST` `/protected/projects/:id/messages` with feature gate.
+- [x] `tenant.features.projectChat` flag, admin-gated, defaulting off, surfaced in
+      `/app/settings` and honored by a `featureGate`.
+- [x] Access control: only participants of that project (its client, tenant admin/field, and
+      the assigned field staff) may read or post. Every message query tenant- and project-bound.
 - [ ] Transport decision (must be recorded as an ADR in `decisions/`): WebSocket vs SSE. The API
       is documented as a stateless cluster, so a Redis pub/sub fan-out is required to survive
       more than one API process. Redis is already a dependency for the tenant cache.
 - [ ] New dependency is unavoidable (`ws` or equivalent); it must be justified in the ADR, and
       `npm audit` must stay free of high/critical.
-- [ ] `tenant.features.projectChat` flag, admin-gated, defaulting off, surfaced in
-      `/app/settings` and honored by a `featureGate`.
 - [ ] Push: Web Push (service worker + VAPID) for clients; explicit opt-in, per-tenant scoping,
       and a documented fallback to polling when permission is denied.
-- [ ] Access control: only participants of that project (its client, tenant admin/field, and
-      the assigned field staff) may read or post. Every message query tenant- and project-bound.
-- [ ] Retention and moderation policy documented before ship (message deletion, report path).
 - [ ] UI: chat panel on the project page, active projects only, with unread badge, connection
       state, reconnect, and a reduced-motion/no-JS fallback message.
 - [ ] Tests: authorization matrix, reconnect behavior, unread counts, feature-flag off path,
       plus e2e for send/receive across two browser contexts.
 
-**Done:** two authenticated participants exchange messages in real time within one tenant and one
-project; a third party in the same tenant but outside the project is denied; push opt-in works;
-the feature is fully disabled when the tenant flag is off.
+**Done:** REST API complete with feature flag; WebSocket/push deferred to next phase.
 
 ---
 

@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-31T00:00:00.000Z",
+  "title": "Design System: ConstructOps",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Cool Paper",
+        "tonalRamp": ["#242828", "#3C4343", "#545F5F", "#6A7B7B", "#849595", "#A0ABAB", "#BCC3C3", "#DFE2E2"]
+      },
+      "paper-sunk": {
+        "role": "neutral",
+        "displayName": "Sunk Paper",
+        "tonalRamp": ["#232829", "#3A4346", "#505E63", "#657A80", "#7F939A", "#9CAAAF", "#B9C2C5", "#DEE2E3"]
+      },
+      "paper-raised": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "tonalRamp": ["#282525", "#423D3D", "#5D5656", "#776E6E", "#918888", "#A9A2A2", "#C2BDBD", "#E2DFDF"]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Job-Set Ink",
+        "tonalRamp": ["#1E262E", "#304050", "#405973", "#4D7398", "#678CB2", "#8CA6BF", "#AFBFCF", "#DAE0E6"]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "tonalRamp": ["#23262A", "#394047", "#4E5A65", "#627384", "#7B8D9D", "#9AA6B1", "#B8C0C6", "#DEE1E3"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "tonalRamp": ["#232629", "#3A4045", "#505A62", "#657480", "#7F8D9A", "#9DA6AF", "#BAC0C5", "#DEE1E3"]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "tonalRamp": ["#232729", "#3A4146", "#505B63", "#657580", "#7F8F9A", "#9CA7AF", "#B9C0C5", "#DEE1E3"]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Control Line",
+        "tonalRamp": ["#242629", "#3B4045", "#515A61", "#67747E", "#818D98", "#9EA6AE", "#BAC0C4", "#DFE1E2"]
+      },
+      "revision": {
+        "role": "secondary",
+        "displayName": "Revision Red",
+        "tonalRamp": ["#371716", "#61221F", "#8E2A24", "#C02E25", "#DA473F", "#DB7671", "#E0A29E", "#EDD5D4"]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Focus Ink",
+        "tonalRamp": ["#1E262E", "#304050", "#405973", "#4D7398", "#678CB2", "#8CA6BF", "#AFBFCF", "#DAE0E6"]
+      },
+      "brand-primary": {
+        "role": "primary",
+        "displayName": "Tenant Primary",
+        "tonalRamp": ["#1E262E", "#304050", "#405973", "#4D7398", "#678CB2", "#8CA6BF", "#AFBFCF", "#DAE0E6"]
+      },
+      "brand-secondary": {
+        "role": "secondary",
+        "displayName": "Tenant Secondary",
+        "tonalRamp": ["#371716", "#61221F", "#8E2A24", "#C02E25", "#DA473F", "#DB7671", "#E0A29E", "#EDD5D4"]
+      },
+      "brand-bg": {
+        "role": "neutral",
+        "displayName": "Tenant Ground",
+        "tonalRamp": ["#242828", "#3C4343", "#545F5F", "#6A7B7B", "#849595", "#A0ABAB", "#BCC3C3", "#DFE2E2"]
+      },
+      "brand-surface": {
+        "role": "neutral",
+        "displayName": "Tenant Surface",
+        "tonalRamp": ["#282525", "#423D3D", "#5D5656", "#776E6E", "#918888", "#A9A2A2", "#C2BDBD", "#E2DFDF"]
+      },
+      "brand-ink": {
+        "role": "neutral",
+        "displayName": "Tenant Foreground",
+        "tonalRamp": ["#282525", "#423D3D", "#5D5656", "#776E6E", "#918888", "#A9A2A2", "#C2BDBD", "#E2DFDF"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Plan-Set Display",
+        "purpose": "One wide, uppercase title per page on landing and auth surfaces."
+      },
+      "title": {
+        "displayName": "Sheet Title",
+        "purpose": "Major section and workspace page titles."
+      },
+      "heading": {
+        "displayName": "Section Heading",
+        "purpose": "Card and subsection headings."
+      },
+      "body": {
+        "displayName": "Working Copy",
+        "purpose": "Prose, form values, control labels, and schedule content."
+      },
+      "label": {
+        "displayName": "Drafting Label",
+        "purpose": "Field labels, table heads, badges, and navigation metadata."
+      },
+      "data": {
+        "displayName": "Schedule Data",
+        "purpose": "Money, percentages, dimensions, and estimates; always tabular."
+      },
+      "stencil": {
+        "displayName": "Stamp Stencil",
+        "purpose": "Stamps and sheet or project identifiers only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet",
+        "value": "0 24px 60px -40px rgba(21, 32, 43, 0.45)",
+        "purpose": "A single floating sheet above the paper ground."
+      },
+      {
+        "name": "hard",
+        "value": "4px 4px 0 0 #15202b",
+        "purpose": "Earned physical offset on a marketing card."
+      },
+      {
+        "name": "hard-revision",
+        "value": "4px 4px 0 0 #b3261e",
+        "purpose": "Earned physical offset tied to a change moment."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Default easing for state transitions and authored moments."
+      },
+      {
+        "name": "duration-fast",
+        "value": "120ms",
+        "purpose": "Hover, press, and popover transitions."
+      },
+      {
+        "name": "duration-base",
+        "value": "200ms",
+        "purpose": "Standard state changes and toast entry."
+      },
+      {
+        "name": "duration-slow",
+        "value": "320ms",
+        "purpose": "The longest authored drawing or stamp moment."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single forward action on a sheet, using the tenant primary with a computed foreground.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Review change order</button>",
+      "css": ".ds-btn-primary { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 20px; border: 1px solid transparent; border-radius: 0; background: var(--brand-primary, #15202b); color: var(--brand-ink, #ffffff); font-family: Archivo, 'Arial Narrow', Arial, sans-serif; font-size: 0.875rem; font-weight: 600; line-height: 1; cursor: pointer; transition: filter 120ms cubic-bezier(0.23, 1, 0.32, 1), transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-primary:hover { filter: brightness(0.95); } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #15202b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A squared, ink-ruled alternative action for dense app surfaces.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">View record</button>",
+      "css": ".ds-btn-secondary { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 12px; border: 1px solid #15202b; border-radius: 0; background: #ffffff; color: #15202b; font-family: Archivo, 'Arial Narrow', Arial, sans-serif; font-size: 0.75rem; font-weight: 600; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background-color 120ms cubic-bezier(0.23, 1, 0.32, 1), transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-secondary:hover { background: #edf0f1; } .ds-btn-secondary:active { transform: scale(0.97); } .ds-btn-secondary:focus-visible { outline: 2px solid #15202b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Revision Button",
+      "kind": "button",
+      "refersTo": "button-revision",
+      "description": "A destructive or change-confirming action. Never decorative.",
+      "html": "<button class=\"ds-btn-revision\" type=\"button\">Decline change</button>",
+      "css": ".ds-btn-revision { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 20px; border: 1px solid transparent; border-radius: 0; background: #b3261e; color: #ffffff; font-family: Archivo, 'Arial Narrow', Arial, sans-serif; font-size: 0.875rem; font-weight: 600; line-height: 1; cursor: pointer; transition: filter 120ms cubic-bezier(0.23, 1, 0.32, 1), transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-revision:hover { filter: brightness(0.95); } .ds-btn-revision:active { transform: scale(0.97); } .ds-btn-revision:focus-visible { outline: 2px solid #15202b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "A 44px white field with an ink border and a hard focus ring.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field__label\">Square feet</span><input class=\"ds-input\" type=\"text\" value=\"120\" /></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 8px; font-family: Archivo, 'Arial Narrow', Arial, sans-serif; } .ds-field__label { color: #5c6a76; font-size: 0.6875rem; font-weight: 600; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; } .ds-input { box-sizing: border-box; width: 100%; height: 44px; padding: 0 12px; border: 1px solid #15202b; border-radius: 0; background: #ffffff; color: #15202b; font-family: Archivo, 'Arial Narrow', Arial, sans-serif; font-size: 1rem; line-height: 1.4; } .ds-input:focus-visible { outline: 2px solid #15202b; outline-offset: 2px; }"
+    },
+    {
+      "name": "Approved Badge",
+      "kind": "chip",
+      "refersTo": "badge-approved",
+      "description": "The settled state of a change order or document.",
+      "html": "<span class=\"ds-badge-approved\">Approved</span>",
+      "css": ".ds-badge-approved { box-sizing: border-box; display: inline-flex; align-items: center; padding: 4px 8px; border: 1px solid #15202b; border-radius: 0; background: #15202b; color: #f8f9f9; font-family: Archivo, 'Arial Narrow', Arial, sans-serif; font-size: 10px; font-weight: 600; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Data Card",
+      "kind": "card",
+      "refersTo": "data-card",
+      "description": "A ruled sheet for one primary number with a dotted header and hairline context footer.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card__head\"><span class=\"ds-card__label\">Contract total</span></div><div class=\"ds-card__body\"><span class=\"ds-card__value\">$36,396</span></div><div class=\"ds-card__foot\">Includes contingency and range midpoint</div></article>",
+      "css": ".ds-card { box-sizing: border-box; border: 1px solid #15202b; border-radius: 0; background: #ffffff; color: #15202b; font-family: Archivo, 'Arial Narrow', Arial, sans-serif; } .ds-card__head { padding: 10px 12px; border-bottom: 1px dotted #8b97a1; } .ds-card__label { color: #5c6a76; font-size: 0.6875rem; font-weight: 600; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; } .ds-card__body { padding: 16px 12px; } .ds-card__value { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; } .ds-card__foot { padding: 10px 12px; border-top: 1px solid #c9d0d5; color: #5c6a76; font-size: 0.75rem; line-height: 1.5; }"
+    },
+    {
+      "name": "Schedule Sheet",
+      "kind": "custom",
+      "refersTo": "schedule",
+      "description": "A dense money or dimension table with a heavy head rule and dotted row rules.",
+      "html": "<div class=\"ds-schedule\"><table><thead><tr><th scope=\"col\">Item</th><th scope=\"col\">Qty</th><th scope=\"col\">Total</th></tr></thead><tbody><tr><th scope=\"row\">Cabinet installation</th><td>120 sf</td><td class=\"ds-num\">$18,420</td></tr><tr><th scope=\"row\">Countertop</th><td>42 sf</td><td class=\"ds-num\">$7,560</td></tr></tbody></table></div>",
+      "css": ".ds-schedule { overflow-x: auto; border: 1px solid #15202b; background: #ffffff; color: #15202b; font-family: Archivo, 'Arial Narrow', Arial, sans-serif; } .ds-schedule table { width: 100%; border-collapse: collapse; font-size: 0.875rem; } .ds-schedule thead th { padding: 8px 12px; border-bottom: 2px solid #15202b; color: #5c6a76; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-align: left; text-transform: uppercase; white-space: nowrap; } .ds-schedule tbody th, .ds-schedule tbody td { padding: 10px 12px; border-bottom: 1px dotted #8b97a1; text-align: left; } .ds-schedule tbody tr:last-child th, .ds-schedule tbody tr:last-child td { border-bottom: 0; } .ds-schedule tbody th { font-weight: 400; } .ds-schedule .ds-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }"
+    },
+    {
+      "name": "Approval Stamp",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "A landed revision mark for an approved or signed record.",
+      "html": "<span class=\"ds-stamp\">Approved</span>",
+      "css": ".ds-stamp { display: inline-flex; align-items: center; justify-content: center; padding: 4px 10px; border: 2px solid #b3261e; border-radius: 0; background: #f8f9f9; color: #b3261e; font-family: 'Saira Stencil', Impact, Haettenschweiler, sans-serif; font-size: 0.6875rem; font-weight: 400; line-height: 1; letter-spacing: 0.14em; text-transform: uppercase; transform: rotate(-4deg); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Job Set",
+    "overview": "ConstructOps surfaces are built like a contractor's plan set: a cool paper sheet, a visible drafting grid, ruled schedules, a title block that carries the tenant's identity, and revision marks reserved for change. The product is a quiet instrument; the tenant is the author. ConstructOps never puts its own identity on a tenant surface.\n\nThis is a working document, not a brochure. The landing page lets a visitor's answers draft an itemized quote on the spot. The app compresses projects, money, and approvals into dense, legible schedules. The portal gives one client their job, its change orders, and a stamped signed record. Across all three, the material is paper, ink, and type; the hierarchy comes from rules and scale, not decoration.",
+    "keyCharacteristics": [
+      "Cool paper ground, white working sheets, near-black ink.",
+      "Square corners and hard 1px rules; the only curve is a radio indicator.",
+      "Archivo drives hierarchy; Saira Stencil appears only on sheet numbers and stamps.",
+      "Tenant color enters through computed brand variables, never through product chrome.",
+      "Revision red and the stamp are scarce, meaningful signals.",
+      "Motion behaves like drafting: rows appear, dimension lines draw, a stamp lands."
+    ],
+    "rules": [
+      {
+        "name": "The Tenant Ink Rule",
+        "body": "Tenant color is data, not product identity. Product chrome stays paper and ink; tenant color appears only through brand variables on actions and title blocks.",
+        "section": "colors"
+      },
+      {
+        "name": "The Revision Rarity Rule",
+        "body": "Revision red means change or danger. It is not an accent for emphasis, decoration, or ordinary links. If nothing changed, nothing should be red.",
+        "section": "colors"
+      },
+      {
+        "name": "The Computed Foreground Rule",
+        "body": "Never hand-pick a foreground on a tenant color. Foregrounds come from the contrast policy: 4.5:1 for body text, 3:1 for large text and graphics.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Any number a reader might compare uses tabular numerals and the data treatment. Money is right-aligned in schedules.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two-Family Rule",
+        "body": "Archivo and Saira Stencil only. No third family; no monospace as body copy.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sheet Rule",
+        "body": "Content sits on a sheet, and a sheet has edges. Do not float text on unbounded gradient fields or let a table escape its border.",
+        "section": "layout"
+      },
+      {
+        "name": "The One-Scroll Rule",
+        "body": "The document scrolls vertically; a dense table may scroll horizontally inside its own sheet. The page never gains a horizontal scrollbar.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat-by-Default Rule",
+        "body": "If a surface can be understood from its border and paper tone, it gets no shadow. Blurred shadows are not a hierarchy tool.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Hard-Offset Rule",
+        "body": "A hard offset shadow must be earned by a single physical object on a marketing surface. It never appears on ordinary app cards, inputs, or tables.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Square-Sheet Rule",
+        "body": "No rounded cards, pill buttons, or soft input corners. If a container feels too plain, add a rule or change the type scale, not a radius.",
+        "section": "shapes"
+      },
+      {
+        "name": "The One-Circle Rule",
+        "body": "The only circular geometry is the radio indicator. Avatars, badges, and status dots stay square.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Control Contract",
+        "body": "Every control is at least 44px tall, has a visible 2px ink focus ring with a 2px paper offset, and uses the same press treatment.",
+        "section": "components"
+      },
+      {
+        "name": "The Status-Only Badge Rule",
+        "body": "Badges communicate state, not decoration. If an item has no state, it gets no badge.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do ground every page on cool paper and place working content on white sheets.",
+      "Do use one display title per page, followed by a label that names the surface.",
+      "Do use 1px ink rules and dotted control-line rules to structure dense information.",
+      "Do reserve revision red and the stamp for actual change, rejection, or destruction.",
+      "Do compute tenant foregrounds with the contrast policy and show the result in /system.",
+      "Do keep numbers tabular, money right-aligned, and comparisons scannable.",
+      "Do let wide schedules scroll inside their sheet while the document stays vertically honest.",
+      "Do move with transform and opacity only; respect prefers-reduced-motion with instant states."
+    ],
+    "donts": [
+      "Don't round cards, buttons, inputs, or badges. The radio indicator is the only circle.",
+      "Don't add blueprint texture, torn paper, tape, fake photography, or decorative gradients. The drafting grid is the only pattern.",
+      "Don't use revision red as a decorative accent or to emphasize ordinary copy.",
+      "Don't put ConstructOps branding on a tenant surface; the tenant is the author.",
+      "Don't stack blurred shadows or use elevation to fake hierarchy that rules can provide.",
+      "Don't introduce a third type family, script face, or monospace body copy.",
+      "Don't use pill-shaped status chips or circular avatars.",
+      "Don't let a table widen the page or hide its overflow without an affordance."
+    ]
+  }
+}

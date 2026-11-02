@@ -1,0 +1,54 @@
+Low-Level Design (LLD) & UI/UX Architecture DocumentProduct: Multi-Tenant Construction Contractor Management & Order PortalTarget Roles: Admin (Contractor / HQ), Field-Operator (Site Superintendent / Crew), Client (Homeowner / Commercial Client)1. Executive Summary & Design ResearchIndustry leaders (such as Buildertrend, CoConstruct, Procore, and CoordinateHQ) reveal that winning portals do not just store information—they eliminate operational friction.The LLD and layout below focus on solving three core industry pain points:Scope Creep & Unpaid Extras: Solved via formal Digital Change Orders with mandatory client sign-offs.Field-to-Office Friction: Solved via Geofenced Daily Site Logs, mobile photo/punch list sync, and real-time offline-first sync.Client Anxiety: Solved via a Unified Feed (visual timeline updates) and transparent milestone approvals.2. Low-Level System Architecture & Data Schema2.1 Entity-Relationship Diagram (Database Model) [ USERS ] 1 ─── N [ PROJECTS ] 1 ─── N [ CHANGE_ORDERS ]
+    │                   │                      │
+    ├── Role (Admin,    ├── Status, Budget     ├── Scope, Cost, Status
+    │   Field, Client)  └── Timeline           └── Signature_SVG
+    │
+    ├── 1 ─── N [ DAILY_LOGS ] 1 ─── N [ PUNCH_ITEMS ]
+    │                │                      │
+    │                └── Photos, Weather    └── Pin_X, Pin_Y, Photo_URL
+    │
+    └── 1 ─── N [ SELECTIONS ] 1 ─── N [ INVOICES ]
+                     │                      │
+                     └── Catalog_Item,      └── Milestone, Amount,
+                         Cost_Impact            Stripe_Payment_ID
+2.2 Core Relational Schemas (PostgreSQL / SQL Standard)users TableField NameTypeConstraintsDescriptionidUUIDPrimary KeyUnique user identificationroleENUMNOT NULL'ADMIN', 'FIELD_OPERATOR', 'CLIENT'company_idUUIDFK -> companies.idMulti-tenant tenant identifieremailVARCHAR(255)UNIQUE, NOT NULLAuthentication identityphoneVARCHAR(32)NULLABLESMS notifications & site contactprojects TableField NameTypeConstraintsDescriptionidUUIDPrimary KeyUnique project identificationclient_idUUIDFK -> users.idAssociated client accountcontractor_idUUIDFK -> users.idAssigned Admin / Project ManageraddressJSONBNOT NULL{street, city, state, zip, lat, lng}statusENUMDEFAULT 'PLANNING''PLANNING', 'IN_PROGRESS', 'PUNCH_LIST', 'COMPLETED'contract_priceDECIMAL(12,2)NOT NULLBase budget contract amountchange_orders TableField NameTypeConstraintsDescriptionidUUIDPrimary KeyUnique change order identifierproject_idUUIDFK -> projects.idTarget construction projecttitleVARCHAR(255)NOT NULLBrief change descriptioncost_deltaDECIMAL(10,2)NOT NULLCost impact (positive or negative)schedule_delta_daysINTDEFAULT 0Impact on project timeline in daysstatusENUMDEFAULT 'DRAFT''DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'REJECTED'client_signatureTEXTNULLABLEBase64 SVG or digital token signaturedaily_logs TableField NameTypeConstraintsDescriptionidUUIDPrimary KeyUnique site log identifierproject_idUUIDFK -> projects.idTarget construction projectauthor_idUUIDFK -> users.idField Operator IDlog_dateDATENOT NULLWork dateweather_dataJSONBNULLABLE{temp: "72F", condition: "Clear"}client_visibleBOOLEANDEFAULT FALSEPublish control for Client Portal Feed3. Security, RBAC & API Endpoint Architecture3.1 Role-Based Access Control (RBAC) MatrixEndpoint / ActionAdminField-OperatorClientCreate / Modify Project✅ Full❌ Read Only❌ Read OnlySubmit Daily Log & Photos✅ Full✅ Create / Edit👁️ View Approved OnlyApprove Change Order📝 Propose❌ Read Only✅ Sign / Accept / RejectSelect Finishes / Upgrades⚙️ Manage Catalog❌ Read Only✅ Select & ConfirmProcess Payments / Invoices💳 Issue❌ No Access💳 Pay via GatewayManage Punch List Pins✅ Assign✅ Pin & Resolve✅ Create & Verify4. UI/UX Architecture & Layout Framework4.1 Global UX Design SystemColor Palette:Primary / Construction Accent: Safety Amber / Warm Copper (#D97706 / #B45309)Admin / Enterprise Dark: Deep Steel Navy (#0F172A)Surface / Background: Slate Off-White (#F8FAFC)Success (Approved/Paid): Forest Emerald (#059669)Alert / Change Order Pending: Crimson (#DC2626)Typography: Inter (Body / Data tables) + Montserrat (Section Headers & Metric Counters)Layout Structure: Standard persistent sidebar (Left), top global search/project switcher header, main dynamic content area (Right).4.2 Interactive Layout WireframeClient Portal View+-----------------------------------------------------------------------------------+
+|  [LOGO]  Project: 1042 Elm Street Villa  ▼         [🔔 2 Alerts]  [Avatar: John]  |
++------------------------------------+----------------------------------------------+
+|  NAVIGATION                        |  PROJECT OVERVIEW (Milestone: Framing 65%)   |
+|  --------------------------------- |  +----------------------------------------+  |
+|  [📊] Dashboard                    |  |  TIMELINE PROGRESS                      |  |
+|  [📸] Live Feed & Photos           |  |  [ Foundation ]--->( Framing )--->[ Finish] |  |
+|  [🎨] Selections (3 Pending)       |  +----------------------------------------+  |
+|  [📑] Change Orders (1 Signature)  |                                              |
+|  [💳] Invoices & Payments          |  ACTION REQUIRED                             |
+|  [📍] Punch List & Bugs            |  +----------------------------------------+  |
+|                                    |  | ⚠️ Change Order #04: Electrical Upgrade|  |
+|                                    |  | Amount: +$2,450.00 | Days: +2 Days     |  |
+|                                    |  | [ Review Details ]  [ ✍️ Approve Now ]   |  |
+|                                    |  +----------------------------------------+  |
+|                                    |                                              |
+|                                    |  LATEST SITE PHOTOS                          |
+|                                    |  +------------+  +------------+  +---------+ |  |
+|                                    |  | [ Image ]  |  | [ Image ]  |  | [Image] | |  |
+|                                    |  | Framing    |  | Roof Deck  |  | Plumbing| |  |
+|                                    |  +------------+  +------------+  +---------+ |  |
++------------------------------------+----------------------------------------------+
+Field-Operator Mobile View+------------------------------------+
+| 👷 FieldPortal  | Site: Elm St Villa|
++------------------------------------+
+|  [ 📸 Quick Capture Photo Log ]    |
+|  [ 📍 Pin New Punch List Item ]     |
++------------------------------------+
+| DAILY LOG ENTRY - Today (Oct 28)   |
+| Weather: 74°F Clear (Auto-fetched) |
+|                                    |
+| Subcontractors On-Site:            |
+| [✓] Framing Crew (4)               |
+| [✓] Electricians (2)               |
+|                                    |
+| Notes:                             |
+| [ Completed second floor framing. ]|
+|                                    |
+| [ Submit Log & Notify Admin ]      |
++------------------------------------+
+5. Detailed Component Specification & Feature Workflows5.1 The "Selections Hub" Engine (Preventing Scope Creep)Catalog Interface: Items grouped by room or trade (e.g., Kitchen Countertops, Master Bath Fixtures).Cost Difference Counter: Live calculator showing base option ($0) vs. premium option (+$1,200).Approval Handshake: Client selects option -> UI prompts for digital sign-off -> Automatically generates a linked line item in the Financial Module.5.2 Mobile-First Punch List (Field Operator <-> Client Interface)Interactive Plan Overlay: Floor plan image rendered in Canvas or SVG.Pin Drop UX: User taps exact location on floor plan -> Attaches photo + audio note -> Categorizes issue (e.g., Paint touch-up, Electrical repair).Status Lifecycle: Open (Red) -> In Progress (Amber) -> Resolved by Field (Blue + Photo proof) -> Verified by Client (Green).5.3 Automated Payment & Milestone ScheduleMilestone Triggers: Admin marks "Roofing Phase" complete -> Triggers invoice generation ($15,000 progress payment).Client Portal Notification: Push notification + email sent with direct Stripe/ACH link.Audit Trail: Payment receipt automatically attached to project document vault upon settlement.6. Development Tech Stack RecommendationFrontend: Next.js (React), Tailwind CSS, Shadcn UI / Radix Primitives, Lucide Icons, Canvas API / Konva.js (for Plan Blueprint Pining).Backend / API: Node.js (NestJS) or Go (High performance file/photo processing), REST + WebSockets (for live activity feeds).Database & Storage: PostgreSQL (Relational data + JSONB for dynamic forms), AWS S3 or Cloudflare R2 (for site photo/video uploads).Authentication & RBAC: Auth0, Supabase Auth, or Clerk (supporting multi-tenant metadata & role-based routing).

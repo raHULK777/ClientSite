@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Direction round — constructops / public surface</title>
+<style>
+  :root {
+    --ink: #161513;
+    --muted: #6c6860;
+    --line: #cfccc4;
+    --paper: #f7f6f2;
+    --board: #e7e4dc;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--board);
+    color: var(--ink);
+    font-family: "Segoe UI", -apple-system, Arial, sans-serif;
+    line-height: 1.45;
+    padding: 40px 24px 72px;
+  }
+  .wrap { max-width: 1360px; margin: 0 auto; }
+  header.top { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; padding-bottom: 28px; border-bottom: 2px solid var(--ink); margin-bottom: 28px; }
+  .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+  h1 { font-size: clamp(28px, 3.6vw, 46px); line-height: 1.02; letter-spacing: -.03em; margin: 0 0 14px; font-weight: 700; }
+  .lede { font-size: 15px; max-width: 62ch; margin: 0; color: #3d3a35; }
+  .facts { font-size: 13px; color: #3d3a35; align-self: end; }
+  .facts dt { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 12px; }
+  .facts dd { margin: 2px 0 0; }
+  .ruts { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 0; }
+  .rut { font-size: 11px; border: 1px solid var(--line); background: #f1efe9; padding: 5px 9px; border-radius: 999px; color: #5a564e; }
+
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+  @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } header.top { grid-template-columns: 1fr; gap: 18px; } }
+
+  .card { background: var(--paper); border: 1px solid #c8c5bd; box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 18px 40px -28px rgba(0,0,0,.4); display: flex; flex-direction: column; }
+  .card-head { display: flex; align-items: baseline; gap: 12px; padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
+  .tag { font-weight: 700; font-size: 12px; width: 24px; height: 24px; display: grid; place-items: center; border: 1.5px solid var(--ink); border-radius: 50%; flex: none; }
+  .card-head h2 { font-size: 16px; margin: 0; letter-spacing: -.01em; flex: 1; }
+  .verdict { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; padding: 4px 8px; border: 1px solid currentColor; white-space: nowrap; }
+  .verdict.pick { color: #7a3f00; }
+  .verdict.comp { color: #38536b; }
+  .verdict.assigned { color: #1d4d2a; }
+
+  /* ---------- preview shell ---------- */
+  .preview { position: relative; height: 340px; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .preview * { box-sizing: border-box; }
+
+  /* ---------- A. THE JOB SET ---------- */
+  .w-jobset {
+    background-color: #f8f9f9;
+    background-image:
+      linear-gradient(rgba(20,30,40,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20,30,40,.055) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color: #15202b;
+    font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+    padding: 0;
+  }
+  .w-jobset .sheetbar { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid #15202b; padding: 7px 14px; background: #f8f9f9; }
+  .w-jobset .sheetbar b { font-size: 10px; letter-spacing: .02em; }
+  .w-jobset .sheetbar .idx { margin-left: auto; display: flex; gap: 12px; color: #5c6a76; }
+  .w-jobset .sheetbar .idx .on { color: #15202b; border-bottom: 2px solid #b3261e; padding-bottom: 2px; }
+  .w-jobset .body { display: grid; grid-template-columns: 1.05fr .95fr; height: calc(100% - 30px); }
+  .w-jobset .left { padding: 20px 16px 0; position: relative; }
+  .w-jobset .kicker { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #b3261e; margin: 0 0 5px; font-weight: 700; }
+  .w-jobset h3 { font-size: 31px; line-height: .95; letter-spacing: -.02em; margin: 0 0 8px; text-transform: uppercase; font-weight: 800; width: 105%; }
+  .w-jobset .sub { font-family: Arial, sans-serif; font-size: 10.5px; line-height: 1.4; color: #3e4a55; max-width: 27ch; margin: 0 0 12px; }
+  .w-jobset .chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .w-jobset .chip { font-family: Arial, sans-serif; font-size: 8.5px; border: 1px solid #9aa6b1; padding: 4px 6px; color: #33404c; background: rgba(255,255,255,.6); }
+  .w-jobset .chip.on { background: #15202b; color: #fff; border-color: #15202b; }
+  .w-jobset .takeoff { border-left: 1px solid #15202b; background: rgba(255,255,255,.72); padding: 13px 13px 0; font-family: Arial, sans-serif; }
+  .w-jobset .takeoff .th { display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: #5c6a76; border-bottom: 1px solid #9aa6b1; padding-bottom: 5px; }
+  .w-jobset .row { display: flex; gap: 6px; font-size: 9px; padding: 4.5px 0; border-bottom: 1px dotted #b8c1c8; }
+  .w-jobset .row span:first-child { flex: 1; }
+  .w-jobset .row span:last-child { font-variant-numeric: tabular-nums; }
+  .w-jobset .row.dim { color: #6b7882; }
+  .w-jobset .total { margin-top: 9px; border-top: 2px solid #15202b; padding-top: 6px; display: flex; justify-content: space-between; align-items: baseline; }
+  .w-jobset .total b { font-size: 17px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .w-jobset .cloud { position: absolute; right: 9px; bottom: 74px; width: 132px; height: 40px; border: 1.5px dashed #b3261e; border-radius: 50% / 42%; transform: rotate(-2deg); }
+  .w-jobset .cta { margin-top: 8px; display: inline-block; background: #c2410c; color: #fff; font-family: Arial, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 7px 11px; }
+  .w-jobset .stamp { position: absolute; right: 18px; bottom: 12px; border: 2px solid #b3261e; color: #b3261e; font-size: 8px; font-weight: 800; letter-spacing: .12em; padding: 4px 7px; transform: rotate(-4deg); text-transform: uppercase; }
+  .w-jobset .titleblock { position: absolute; left: 0; right: 0; bottom: 0; height: 33px; border-top: 1px solid #15202b; background: #0b1220; color: #e8edf1; display: flex; align-items: center; gap: 14px; padding: 0 12px; font-size: 8px; letter-spacing: .02em; }
+  .w-jobset .titleblock .name { font-weight: 800; font-size: 9px; letter-spacing: .04em; }
+  .w-jobset .titleblock .span { margin-left: auto; color: #a9b6c1; }
+
+  /* ---------- B. MATERIAL BOARD ---------- */
+  .w-material { background: #1b1a17; color: #f3efe6; font-family: "Segoe UI", Arial, sans-serif; }
+  .w-material .tiles { display: grid; grid-template-columns: 1.25fr .75fr; grid-template-rows: 1fr 1fr; height: 100%; gap: 2px; }
+  .w-material .tile { position: relative; overflow: hidden; }
+  .w-material .t-concrete { background: radial-gradient(circle at 30% 20%, #d9d5cb 0 2px, transparent 3px), radial-gradient(circle at 70% 65%, #b7b2a6 0 1.5px, transparent 2.5px), linear-gradient(145deg, #cfcabd, #a8a294); background-size: 19px 19px, 13px 13px, 100% 100%; }
+  .w-material .t-wood { background: repeating-linear-gradient(92deg, #8a5a34 0 7px, #96653d 7px 9px, #7c4e2c 9px 15px, #a06f45 15px 18px); }
+  .w-material .t-terrazzo { background: radial-gradient(circle at 20% 30%, #c2410c 0 2px, transparent 2.5px), radial-gradient(circle at 65% 60%, #2f4858 0 1.8px, transparent 2.3px), radial-gradient(circle at 45% 80%, #d8cbb6 0 2.4px, transparent 3px), radial-gradient(circle at 82% 18%, #8a8f7c 0 1.6px, transparent 2.2px), #e6dfd1; background-size: 34px 34px, 41px 41px, 29px 29px, 37px 37px, 100% 100%; }
+  .w-material .t-paint { background: #0b1220; }
+  .w-material .t-paint::after { content: ""; position: absolute; inset: 14px; border: 1px solid rgba(255,255,255,.35); }
+  .w-material .overlay { position: absolute; inset: 0; grid-column: 1 / 2; grid-row: 1 / 3; background: linear-gradient(90deg, rgba(15,14,12,.86) 0 46%, rgba(15,14,12,0) 78%); padding: 22px 18px; display: flex; flex-direction: column; }
+  .w-material .kicker { font-size: 8px; letter-spacing: .18em; text-transform: uppercase; color: #c9c0ae; margin: 0 0 8px; }
+  .w-material h3 { font-size: 27px; line-height: 1.02; letter-spacing: -.03em; margin: 0 0 7px; font-weight: 600; max-width: 12ch; }
+  .w-material .sub { font-size: 10px; color: #c9c2b5; max-width: 25ch; margin: 0; }
+  .w-material .chips { margin-top: auto; display: flex; gap: 5px; flex-wrap: wrap; }
+  .w-material .chip { font-size: 8px; border: 1px solid rgba(255,255,255,.35); padding: 3px 6px; color: #e7e1d6; backdrop-filter: blur(2px); }
+  .w-material .chip.on { background: #c2410c; border-color: #c2410c; color: #fff; }
+  .w-material .price { position: absolute; right: 14px; bottom: 14px; text-align: right; background: rgba(15,14,12,.55); padding: 7px 9px; border-left: 2px solid #c2410c; }
+  .w-material .price small { display: block; font-size: 7px; letter-spacing: .14em; text-transform: uppercase; color: #cfc6b6; }
+  .w-material .price b { font-size: 15px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- C. PERMIT STAMP ---------- */
+  .w-permit { background: #f2eee2; color: #20242a; font-family: "Courier New", Courier, monospace; padding: 16px 18px; }
+  .w-permit .rule { border-top: 2px solid #20242a; border-bottom: 1px solid #20242a; padding: 6px 0; display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
+  .w-permit h3 { font-size: 19px; letter-spacing: .04em; margin: 12px 0 2px; text-transform: uppercase; }
+  .w-permit .no { font-size: 9px; letter-spacing: .12em; color: #5b5f63; margin: 0 0 10px; }
+  .w-permit .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .w-permit .field { border: 1px solid #8b8b84; background: rgba(255,255,255,.45); padding: 5px 6px; min-height: 29px; }
+  .w-permit .field.wide { grid-column: 1 / -1; }
+  .w-permit .field small { display: block; font-size: 6.5px; letter-spacing: .12em; text-transform: uppercase; color: #6b6d6c; }
+  .w-permit .field span { font-size: 9px; }
+  .w-permit .stamp { position: absolute; right: 26px; top: 74px; border: 3px double #a02c21; color: #a02c21; font-size: 15px; font-weight: 700; letter-spacing: .1em; padding: 5px 10px; transform: rotate(-9deg); opacity: .9; }
+  .w-permit .stamp small { display: block; font-size: 5.5px; letter-spacing: .16em; text-align: center; }
+  .w-permit .sign { margin-top: 9px; display: flex; gap: 14px; align-items: flex-end; }
+  .w-permit .sigline { flex: 1; border-bottom: 1px solid #20242a; height: 18px; }
+  .w-permit .sign small { font-size: 6.5px; letter-spacing: .1em; text-transform: uppercase; color: #6b6d6c; }
+  .w-permit .note { position: absolute; bottom: 10px; left: 18px; right: 18px; font-size: 6.5px; color: #6b6d6c; line-height: 1.5; border-top: 1px dotted #9d9d94; padding-top: 4px; }
+
+  /* ---------- D. TRADE CATALOG ---------- */
+  .w-catalog { background: #f3ede0; color: #22201c; font-family: Georgia, "Times New Roman", serif; padding: 14px 16px; }
+  .w-catalog .head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #22201c; padding-bottom: 5px; }
+  .w-catalog h3 { font-size: 22px; letter-spacing: -.02em; margin: 0; line-height: .95; }
+  .w-catalog .tab { background: #a02c21; color: #f6f1e6; font-family: Arial, sans-serif; font-size: 7px; letter-spacing: .14em; text-transform: uppercase; padding: 4px 7px; }
+  .w-catalog .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+  .w-catalog .col p { font-size: 8px; line-height: 1.55; margin: 0 0 5px; text-align: justify; hyphens: auto; }
+  .w-catalog .drop::first-letter { font-size: 22px; float: left; line-height: .8; padding-right: 3px; }
+  .w-catalog .figure { margin: 0 0 6px; }
+  .w-catalog .halftone { height: 62px; background: radial-gradient(circle at 30% 40%, #3f3a33 0 1px, transparent 1.5px) 0 0 / 4px 4px, linear-gradient(120deg, #b9ae9b, #8c8372); border: 1px solid #9d9382; }
+  .w-catalog .cap { font-family: Arial, sans-serif; font-size: 6.5px; color: #5c564c; margin-top: 2px; }
+  .w-catalog table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 7px; margin-top: 5px; }
+  .w-catalog th { text-align: left; font-size: 6px; letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid #22201c; padding: 2px 0; }
+  .w-catalog td { border-bottom: 1px dotted #a49b8b; padding: 2.5px 0; }
+  .w-catalog td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .w-catalog .index { position: absolute; left: 0; top: 52px; writing-mode: vertical-rl; transform: rotate(180deg); background: #22201c; color: #f3ede0; font-family: Arial, sans-serif; font-size: 6.5px; letter-spacing: .2em; text-transform: uppercase; padding: 7px 3px; }
+
+  /* ---------- info ---------- */
+  .info { padding: 14px 16px 16px; display: grid; gap: 8px; font-size: 12px; }
+  .info .row { display: grid; grid-template-columns: 74px 1fr; gap: 10px; }
+  .info .k { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+  .info .v { color: #34312c; }
+  .swatches { display: flex; gap: 4px; }
+  .sw { width: 16px; height: 16px; border: 1px solid rgba(0,0,0,.25); }
+  .risk { color: #7a3f00; }
+  .signature { font-weight: 600; color: #1e1c19; }
+
+  .exit { margin-top: 22px; border: 1px dashed #a8a49a; padding: 14px 16px; display: flex; gap: 18px; align-items: baseline; font-size: 12.5px; color: #4d4a43; background: rgba(255,255,255,.35); }
+  .exit b { color: var(--ink); white-space: nowrap; }
+  footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--muted); border-top: 1px solid #bcb8ad; padding-top: 14px; }
+  footer b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">constructops · direction round · public landing + estimator</p>
+      <h1>The page is the contractor's plan set, not a picture of one.</h1>
+      <p class="lede">One deployment, every contractor's own branded domain. The first surface must prove two things at once: a real itemized price can be produced right here, and the business behind it looks established. Four worlds are shown; one is assigned.</p>
+      <div class="ruts">
+        <span class="rut">avoid: house-photo hero + three service cards</span>
+        <span class="rut">avoid: blueprint-grid dark mode + neon CTA</span>
+        <span class="rut">avoid: navy/orange/cream template</span>
+      </div>
+    </div>
+    <dl class="facts">
+      <dt>Physical object</dt><dd>A job binder: plan sheets, carbon-copy estimate pad, permits, material chips, a stamp.</dd>
+      <dt>Before the web</dt><dd>Plan sets on a tailgate; change orders on carbon paper; permit stamps; catalogs with index tabs.</dd>
+      <dt>Constraint</dt><dd>Code-led only — no image generation. Tenant colors are data, never the product's identity.</dd>
+    </dl>
+  </header>
+
+  <div class="grid">
+
+    <!-- A -->
+    <article class="card">
+      <div class="card-head">
+        <span class="tag">A</span>
+        <h2>The Job Set</h2>
+        <span class="verdict assigned">Assigned</span>
+      </div>
+      <div class="preview w-jobset">
+        <div class="sheetbar">
+          <b>SANTOS CONSTRUCTION</b>
+          <span>A-101</span>
+          <div class="idx"><span class="on">Scope</span><span>Takeoff</span><span>Terms</span></div>
+        </div>
+        <div class="body">
+          <div class="left">
+            <p class="kicker">Residential · Rev. 04</p>
+            <h3>Additions &amp; remodels</h3>
+            <p class="sub">Pick your scope. The takeoff sheet prices it while you decide — no callback, no mystery line items.</p>
+            <div class="chips">
+              <span class="chip on">Kitchen</span><span class="chip">Bath</span><span class="chip">Addition</span><span class="chip">Structural</span>
+            </div>
+          </div>
+          <div class="takeoff">
+            <div class="th"><span>Takeoff / 04</span><span>Est.</span></div>
+            <div class="row"><span>Demo &amp; protection</span><span>2,400</span></div>
+            <div class="row"><span>Cabinetry · 18 lf</span><span>7,850</span></div>
+            <div class="row"><span>Counters · quartz</span><span>3,120</span></div>
+            <div class="row dim"><span>Electrical allowance</span><span>1,900</span></div>
+            <div class="total"><span>Range</span><b>$28–34k</b></div>
+            <span class="cta">Price my project</span>
+            <div class="cloud"></div>
+            <div class="stamp">Ready to review</div>
+          </div>
+        </div>
+        <div class="titleblock">
+          <span class="name">SANTOS CONSTRUCTION</span>
+          <span>LIC. 884-201</span>
+          <span>EAST BAY, CA</span>
+          <span class="span">510 · 555 · 0142</span>
+        </div>
+      </div>
+      <div class="info">
+        <div class="row"><div class="k">World</div><div class="v">Cool paper, faint drafting grid, ink rules, revision marks, title block, sheet index. The page is the sheet.</div></div>
+        <div class="row"><div class="k">Type</div><div class="v">Drafting grotesque (Archivo width axis) + tabular numerals + stencil for sheet numbers.</div></div>
+        <div class="row"><div class="k">Palette</div><div class="v"><span class="swatches"><span class="sw" style="background:#f8f9f9"></span><span class="sw" style="background:#15202b"></span><span class="sw" style="background:#b3261e"></span><span class="sw" style="background:#c2410c"></span><span class="sw" style="background:#0b1220"></span></span></div></div>
+        <div class="row"><div class="k">Signature</div><div class="v signature">Answering the estimator drafts the quote: dimension lines extend, rows land, a revision cloud draws around the total, one stamp.</div></div>
+        <div class="row"><div class="k">Risk</div><div class="v risk">Drafting language can intimidate homeowners; the world collapses into “blueprint tech” if it becomes blue + mono + neon.</div></div>
+      </div>
+    </article>
+
+    <!-- B -->
+    <article class="card">
+      <div class="card-head">
+        <span class="tag">B</span>
+        <h2>Material Sample Board</h2>
+        <span class="verdict pick">Impeccable's pick</span>
+      </div>
+      <div class="preview w-material">
+        <div class="tiles">
+          <div class="tile t-concrete"></div>
+          <div class="tile t-wood"></div>
+          <div class="tile t-terrazzo"></div>
+          <div class="tile t-paint"></div>
+          <div class="overlay">
+            <p class="kicker">Santos Construction · Finishes</p>
+            <h3>Choose the finish. See the number.</h3>
+            <p class="sub">A quote that assembles like a sample board — material, labor, and scope in the same frame.</p>
+            <div class="chips">
+              <span class="chip on">Concrete</span><span class="chip">Oak</span><span class="chip">Terrazzo</span>
+            </div>
+            <div class="price"><small>Your board</small><b>$31,480</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="info">
+        <div class="row"><div class="k">World</div><div class="v">Real material at full bleed; labeled chips, edge profiles, no gradients pretending to be texture.</div></div>
+        <div class="row"><div class="k">Type</div><div class="v">Quiet grotesque for the offer, small caps for labels; the material carries the page.</div></div>
+        <div class="row"><div class="k">Palette</div><div class="v"><span class="swatches"><span class="sw" style="background:#cfcabd"></span><span class="sw" style="background:#8a5a34"></span><span class="sw" style="background:#e6dfd1"></span><span class="sw" style="background:#0b1220"></span><span class="sw" style="background:#c2410c"></span></span></div></div>
+        <div class="row"><div class="k">Signature</div><div class="v signature">A working selection board: tapping a material updates the itemized total and the board composition.</div></div>
+        <div class="row"><div class="k">Risk</div><div class="v risk">Familiar and warm; can read as a design-build portfolio rather than software. The mechanism must be proven by a working quote.</div></div>
+      </div>
+    </article>
+
+    <!-- C -->
+    <article class="card">
+      <div class="card-head">
+        <span class="tag">C</span>
+        <h2>Permit Stamp</h2>
+        <span class="verdict comp">Competitive · clarity</span>
+      </div>
+      <div class="preview w-permit">
+        <div class="rule"><span>Change order</span><span>Form 04-B</span></div>
+        <h3>Change Order No. 04</h3>
+        <p class="no">Project 2026-014 · Santos Construction</p>
+        <div class="fields">
+          <div class="field"><small>Scope</small><span>Relocate island outlet</span></div>
+          <div class="field"><small>Amount</small><span>$1,840.00</span></div>
+          <div class="field wide"><small>Reason</small><span>Field condition — existing drain conflicts with new cabinet run.</span></div>
+          <div class="field"><small>Signer</small><span>D. Alvarez</span></div>
+          <div class="field"><small>Timestamp</small><span>2026-10-30 18:42 PT</span></div>
+          <div class="field wide"><small>Evidence</small><span>IP 73.202.18.44 · link sent by text · viewed 18:31</span></div>
+        </div>
+        <div class="sign"><div class="sigline"></div><small>Client signature</small></div>
+        <div class="stamp">Approved<small>ConstructOps · signed</small></div>
+        <p class="note">By signing you approve the scope and amount above. This record is retained by the contractor and available to you at any time.</p>
+      </div>
+      <div class="info">
+        <div class="row"><div class="k">World</div><div class="v">Municipal form stock: ruled boxes, typewriter labels, one ink, a rubber stamp that lands once.</div></div>
+        <div class="row"><div class="k">Type</div><div class="v">Typewriter for the record, condensed sans for the stamp; everything reads as a document of record.</div></div>
+        <div class="row"><div class="k">Palette</div><div class="v"><span class="swatches"><span class="sw" style="background:#f2eee2"></span><span class="sw" style="background:#20242a"></span><span class="sw" style="background:#a02c21"></span><span class="sw" style="background:#8b8b84"></span></span></div></div>
+        <div class="row"><div class="k">Signature</div><div class="v signature">Approval is a stamped receipt: signer, time, IP, scope captured in the same frame, then the stamp lands.</div></div>
+        <div class="row"><div class="k">Risk</div><div class="v risk">Bureaucratic and cold on a public landing; excellent on the approval surface, weak at making a homeowner want a quote.</div></div>
+      </div>
+    </article>
+
+    <!-- D -->
+    <article class="card">
+      <div class="card-head">
+        <span class="tag">D</span>
+        <h2>Trade Catalog</h2>
+        <span class="verdict comp">Competitive · clarity</span>
+      </div>
+      <div class="preview w-catalog">
+        <div class="index">Index · 2026</div>
+        <div class="head">
+          <h3>The 2026<br>Spec Book</h3>
+          <span class="tab">Section 09</span>
+        </div>
+        <div class="cols">
+          <div class="col">
+            <div class="figure">
+              <div class="halftone"></div>
+              <div class="cap">Fig. 9.2 — quartz counter, 3cm eased edge</div>
+            </div>
+            <p class="drop">Finishes are priced in place, not guessed. Each line carries material, labor, and a stated allowance, so the total can be read like a catalog page rather than a sales call.</p>
+            <p>Alternates sit beside the base spec, never hidden behind a tier toggle.</p>
+          </div>
+          <div class="col">
+            <table>
+              <tr><th>Item</th><th>Spec</th><th>Total</th></tr>
+              <tr><td>09.1</td><td>Cabinetry</td><td>7,850</td></tr>
+              <tr><td>09.2</td><td>Quartz</td><td>3,120</td></tr>
+              <tr><td>09.3</td><td>Backsplash</td><td>980</td></tr>
+              <tr><td>09.4</td><td>Lighting</td><td>1,240</td></tr>
+            </table>
+            <p style="margin-top:6px">Base spec total <b>$13,190</b>. Allowances flagged where a field measurement is still open.</p>
+          </div>
+        </div>
+      </div>
+      <div class="info">
+        <div class="row"><div class="k">World</div><div class="v">Coated stock, dense two-column setting, index tabs, halftone figures, ruled schedules.</div></div>
+        <div class="row"><div class="k">Type</div><div class="v">Serif body for reading, grotesque tables for comparison; small caps and figure captions.</div></div>
+        <div class="row"><div class="k">Palette</div><div class="v"><span class="swatches"><span class="sw" style="background:#f3ede0"></span><span class="sw" style="background:#22201c"></span><span class="sw" style="background:#a02c21"></span><span class="sw" style="background:#b9ae9b"></span></span></div></div>
+        <div class="row"><div class="k">Signature</div><div class="v signature">The estimator reads as a spec schedule with a real index and an alternates column; the quote is comparable at a glance.</div></div>
+        <div class="row"><div class="k">Risk</div><div class="v risk">Reads as a document, not software; weak emotional pull and hard to make feel current without becoming editorial pastiche.</div></div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="exit">
+    <b>Standing exit</b>
+    <span>The conventional contractor site — hero photograph, “Building your dream home,” three service cards, one testimonial, contact form — played straight at full craft. Always available, never recommended.</span>
+  </div>
+
+  <footer>
+    <span><b>How to lock:</b> reply with a letter, or “A but with B's warmth,” or the standing exit. The lock writes the direction contract, including type, palette behavior, motion, and the first-viewport composition.</span>
+    <span>seed: none (concept-seed unavailable) · method: manual derivation</span>
+  </footer>
+</div>
+</body>
+</html>

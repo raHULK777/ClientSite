@@ -12,8 +12,7 @@ import { Schedule, ScheduleBody, ScheduleCell, ScheduleRow } from "@/components/
 import { Sheet, TitleBlock } from "@/components/ui/sheet";
 import { Stamp } from "@/components/ui/stamp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { apiMutate } from "@/lib/client-api";
-import { CoreApiError } from "@/lib/core";
+import { apiMutate, ClientApiError } from "@/lib/client-api";
 import { cn } from "@/lib/cn";
 import {
   formatDate,
@@ -77,7 +76,7 @@ export function PortalProjectDetail({
       setNewMessage("");
       router.refresh();
     } catch (cause) {
-      alert(cause instanceof CoreApiError ? cause.message : "Could not send message.");
+      alert(cause instanceof ClientApiError ? cause.message : "Could not send message.");
     } finally {
       setSending(false);
     }
